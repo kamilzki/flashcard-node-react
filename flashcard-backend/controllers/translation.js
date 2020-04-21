@@ -39,7 +39,9 @@ exports.getTranslations = async (req, res, next) => {
     const languageCode = to + from;
     // const queryResult = getExampleData();
     const queryResult = await axiosPons.get('/dictionary?' + querystring.stringify({l: languageCode, q: queryWord}));
-
+    if (queryResult.status === 204) {
+      return res.status(204).json({message: queryResult.statusText});
+    }
     const resultBody = queryResult.data.flatMap(it => {
       return it.hits.map(hit => {
         if (hit.type === 'entry')

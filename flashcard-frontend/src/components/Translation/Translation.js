@@ -22,16 +22,18 @@ const Translation = (props) => {
     if (wordParam && fromParam && toParam) {
       axiosServerAuth.get(`/translation/${wordParam}?from=${fromParam}&to=${toParam}`, {})
         .then(result => {
-          setResults(state => ({
-            ...state,
-            fromWord: wordParam,
-            meanings: result.data
-          }));
-          setLoading(state => ({
-            ...state,
-            loading: false,
-            loaded: true
-          }));
+          if (result.status === 200 && result.data) {
+            setResults(state => ({
+              ...state,
+              fromWord: wordParam,
+              meanings: result.data
+            }));
+            setLoading(state => ({
+              ...state,
+              loading: false,
+              loaded: true
+            }));
+          }
           return result;
         })
         .catch(err => {

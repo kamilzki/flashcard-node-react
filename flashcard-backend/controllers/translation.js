@@ -38,20 +38,25 @@ exports.getTranslations = async (req, res, next) => {
 
     const languageCode = to + from;
     // const queryResult = getExampleData();
-    const queryResult = await axiosPons.get('/dictionary?' + querystring.stringify({ l: languageCode, q: queryWord }));
+    const queryResult = await axiosPons.get('/dictionary?' + querystring.stringify({l: languageCode, q: queryWord}));
 
     const resultBody = queryResult.data.flatMap(it => {
       return it.hits.map(hit => {
-        return hit.roms.flatMap(rom => {
-          return rom.arabs.map(arab => ({header: arab.header, translations: arab.translations}));
-        });
-      })
+        if (hit.type === 'entry')
+          return hit.roms.flatMap(rom => {
+            return rom.arabs.map(arab => ({header: arab.header, translations: arab.translations}));
+          });
+        else if (hit.type === 'translation')
+          return [{header: hit.type, translations: [{source: hit.source, target: hit.target}]}];
+        else
+          return null;
+      }).filter(hitResult => hitResult)
     });
 
     console.log(resultBody);
     res.status(200).json(resultBody);
   } catch (err) {
-    if (!err.response.status) {
+    if (!err.response || !err.response.status) {
       err.statusCode = 500;
     }
     next(err);

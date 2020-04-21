@@ -7,7 +7,7 @@ const Translation = (props) => {
   const history = useHistory();
   const [results, setResults] = React.useState({
     fromWord: "",
-    toWords: [],
+    meanings: [],
     fromLang: "",
     toLang: ""
   });
@@ -16,16 +16,16 @@ const Translation = (props) => {
   const fetchTranslations = () => {
     const params = new URLSearchParams(history.location.search);
     const wordParam = params.get('word');
-    if (wordParam) {
-      // axiosServerAuth.get(`/translation/?queryWord=${wordParam}`)
-      axiosServerAuth.get(`/translation/${wordParam}`, {
+    const fromParam = params.get('from');
+    const toParam = params.get('to');
 
-      })
+    if (wordParam && fromParam && toParam) {
+      axiosServerAuth.get(`/translation/${wordParam}?from=${fromParam}&to=${toParam}`, {})
         .then(result => {
           setResults(state => ({
             ...state,
-            fromWord: 'fromWW',
-            toWords: result.data
+            fromWord: wordParam,
+            meanings: result.data
           }));
           setLoading(state => ({
             ...state,
@@ -35,12 +35,13 @@ const Translation = (props) => {
           return result;
         })
         .catch(err => {
-          console.log(err);
+          let message = JSON.parse(err.request.response);
+
           setLoading(state => ({
             ...state,
             loading: false,
             loaded: false,
-            error: true
+            error: message
           }));
         })
     }
@@ -55,16 +56,21 @@ const Translation = (props) => {
   }
 
   return <div>
-    {loading.loaded ?
-      <div>
-        {results.toWords.map((res, index) => (
-          <Meanings
-            translations={res}
-            key={index}
-          />
-        ))}
-      </div> :
-      <div>LOADING...</div>
+    {
+      loading.error ?
+        <div>{loading.error.message}</div> :
+        loading.loaded ?
+          <div>
+            {
+              results.meanings.map((res, index) => (
+                <Meanings
+                  translations={res}
+                  key={index}
+                />
+              ))
+            }
+          </div> :
+          <div>LOADING...</div>
     }
   </div>;
 };

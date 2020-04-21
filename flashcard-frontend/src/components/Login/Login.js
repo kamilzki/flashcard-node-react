@@ -39,7 +39,7 @@ const Login = (props) => {
           console.log('Error!');
           throw new Error('Could not authenticate you!');
         }
-        return res;
+        return res.data;
       })
       .then(resData => {
         console.log(resData);

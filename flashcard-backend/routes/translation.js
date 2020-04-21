@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.get(
   '/:queryWord',
+  isAuth,
   transaltionController.getTranslations
 );
 

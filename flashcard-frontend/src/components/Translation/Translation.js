@@ -1,6 +1,6 @@
 import React from 'react';
 import {useHistory} from "react-router-dom";
-import {axiosServer} from "../../helpers/axiosInstance";
+import {axiosServerAuth} from "../../helpers/axiosInstance";
 import Meanings from "../Meanings/Meanings";
 
 const Translation = (props) => {
@@ -17,9 +17,10 @@ const Translation = (props) => {
     const params = new URLSearchParams(history.location.search);
     const wordParam = params.get('word');
     if (wordParam) {
-      console.log('wordParam found!', wordParam);
-      // axiosServer.get(`/translation/?queryWord=${wordParam}`)
-      axiosServer.get(`/translation/${wordParam}`)
+      // axiosServerAuth.get(`/translation/?queryWord=${wordParam}`)
+      axiosServerAuth.get(`/translation/${wordParam}`, {
+
+      })
         .then(result => {
           setResults(state => ({
             ...state,

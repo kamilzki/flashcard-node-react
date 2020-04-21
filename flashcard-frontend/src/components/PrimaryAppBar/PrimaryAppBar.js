@@ -107,7 +107,7 @@ export default function PrimaryAppBar(props) {
             />
           </div>
           {
-            props.isAuth ?
+            new Date() < new Date(localStorage.getItem('expiryDate')) ?
               <>
                 <Button onClick={props.onLogout}>Logout</Button>
                 <Link to="/flashcards">

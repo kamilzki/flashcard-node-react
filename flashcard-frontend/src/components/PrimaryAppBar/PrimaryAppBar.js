@@ -1,4 +1,6 @@
 import React from 'react';
+import { useHistory } from "react-router-dom";
+
 import {fade, makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -10,9 +12,6 @@ import InputBase from "@material-ui/core/InputBase";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
   Link
 } from "react-router-dom";
 
@@ -66,11 +65,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function PrimaryAppBar(props) {
+  const history = useHistory();
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [search, setSearch] = React.useState("");
 
   const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+
+  };
+
+  const onSearchChange = (event) => {
+    const newValue = event.target.value;
+    setSearch(state => (newValue));
+  };
+
+  const searchHandler = (event) => {
+    history.push(`/search${search !== "" ? '?word=' + search : "" }`)
   };
 
   return (
@@ -86,6 +95,9 @@ export default function PrimaryAppBar(props) {
               <SearchIcon/>
             </div>
             <InputBase
+              value={search}
+              onKeyPress={searchHandler}
+              onChange={onSearchChange}
               placeholder="Search…"
               classes={{
                 root: classes.inputRoot,

@@ -9,6 +9,7 @@ import './App.css';
 import Login from "./components/Login/Login";
 import Signup from "./components/Singup/Signup";
 import PrimaryAppBar from "./components/PrimaryAppBar/PrimaryAppBar";
+import Translation from "./components/Translation/Translation";
 
 export default function App() {
   const [authState, setAuthState] = React.useState({
@@ -42,6 +43,9 @@ export default function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
+          <Route path="/search">
+            <Translation/>
+          </Route>
           <Route path="/signup">
             <Signup/>
           </Route>

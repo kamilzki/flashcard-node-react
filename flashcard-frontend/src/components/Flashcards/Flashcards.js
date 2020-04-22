@@ -1,7 +1,7 @@
 import React from 'react';
 import {axiosServerAuthFunc} from "../../helpers/axiosInstance";
-import RemoveIcon from '@material-ui/icons/Remove';
 import Flashcard from "./Flashcard/Flashcard";
+import './Flashcards.css'
 
 const Flashcards = (props) => {
   const [flashcards, setFlashcards] = React.useState(null);

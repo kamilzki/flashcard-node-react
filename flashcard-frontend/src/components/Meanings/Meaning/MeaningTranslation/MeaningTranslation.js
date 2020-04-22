@@ -2,7 +2,7 @@ import React from 'react';
 import './MeaningsTranslation.css'
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/Add';
-import {axiosServerAuth} from "../../../../helpers/axiosInstance";
+import {axiosServerAuthFunc} from "../../../../helpers/axiosInstance";
 
 const MeaningTranslation = (props) => {
 
@@ -14,7 +14,7 @@ const MeaningTranslation = (props) => {
       toLang: props.toLang,
       userId: localStorage.getItem('userId')
     };
-    axiosServerAuth.post('/flashcard', body)
+    axiosServerAuthFunc().post('/flashcard', body)
       .then(result => {
 
       })

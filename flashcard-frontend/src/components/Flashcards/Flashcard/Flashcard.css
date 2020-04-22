@@ -1,14 +1,11 @@
-.meaningTranslation {
+.upperMenu {
   background-color: #3f51b5;
   text-align: right;
 }
 
-.card {
-  display: grid;
-  grid-template-columns: auto;
-  grid-gap: 10px;
-  font-size: 18px;
-  color: white;
+.languageTranslation {
+  text-align: left;
+  font-size: 10px;
 }
 
 .content {
@@ -32,4 +29,45 @@
   color: #cdcdcd;
   font-style: italic;
   font-weight: normal;
+}
+
+.flip-card {
+  background-color: transparent;
+  height: 180px;
+  cursor: pointer;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.5s;
+  transform-style: preserve-3d;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.rotate {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.flip-card-front {
+  background-color: #3f51b5;
+  color: white;
+  font-size: 18px;
+}
+
+.flip-card-back {
+  background-color: #475ccf;
+  color: white;
+  transform: rotateY(180deg);
+  font-size: 18px;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import {useHistory} from "react-router-dom";
-import {axiosServerAuth} from "../../helpers/axiosInstance";
+import {axiosServerAuthFunc} from "../../helpers/axiosInstance";
 import Meanings from "../Meanings/Meanings";
 
 const Translation = (props) => {
@@ -20,7 +20,7 @@ const Translation = (props) => {
 
   const fetchTranslations = () => {
     if (wordParam && fromParam && toParam) {
-      axiosServerAuth.get(`/translation/${wordParam}?from=${fromParam}&to=${toParam}`, {})
+      axiosServerAuthFunc().get(`/translation/${wordParam}?from=${fromParam}&to=${toParam}`, {})
         .then(result => {
           if (result.status === 200 || result.status === 204) {
             setResults(state => ({
@@ -33,7 +33,8 @@ const Translation = (props) => {
             setLoading(state => ({
               ...state,
               loading: false,
-              loaded: true
+              loaded: true,
+              error: false
             }));
           }
           return result;

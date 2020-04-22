@@ -80,6 +80,8 @@ const Translation = (props) => {
               results.meanings.map((res, index) => (
                 <Meanings
                   translations={res}
+                  fromLang={results.fromLang}
+                  toLang={results.toLang}
                   key={index}
                 />
               ))

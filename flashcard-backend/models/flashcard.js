@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const postSchema = new Schema(
+const schema = new Schema(
   {
     from: {
       type: String,
@@ -30,4 +30,4 @@ const postSchema = new Schema(
   {timestamps: true}
 );
 
-module.exports = mongoose.model('Flashcard', postSchema);
+module.exports = mongoose.model('Flashcard', schema);

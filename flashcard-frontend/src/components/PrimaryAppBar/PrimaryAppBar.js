@@ -136,7 +136,6 @@ export default function PrimaryAppBar(props) {
       })
       .catch(err => {
         let message = 'Something go wrong. Please try again later.';
-        console.log(err.request);
         if (err.request.response) {
           message = JSON.parse(err.request.response);
         }

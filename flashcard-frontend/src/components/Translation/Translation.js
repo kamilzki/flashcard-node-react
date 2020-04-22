@@ -22,9 +22,6 @@ const Translation = (props) => {
     if (wordParam && fromParam && toParam) {
       axiosServerAuth.get(`/translation/${wordParam}?from=${fromParam}&to=${toParam}`, {})
         .then(result => {
-          console.log('result.data');
-          console.log(result.data);
-          console.log(result.status);
           if (result.status === 200 || result.status === 204) {
             setResults(state => ({
               ...state,
@@ -43,7 +40,6 @@ const Translation = (props) => {
         })
         .catch(err => {
           let message = {message: 'Something go wrong. Please try again later.'};
-          console.log(err.request);
           if (err.request.response) {
             message = JSON.parse(err.request.response);
           }

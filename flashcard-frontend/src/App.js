@@ -10,6 +10,7 @@ import Login from "./components/Login/Login";
 import Signup from "./components/Singup/Signup";
 import PrimaryAppBar from "./components/PrimaryAppBar/PrimaryAppBar";
 import Translation from "./components/Translation/Translation";
+import Flashcards from "./components/Flashcards/Flashcards";
 
 export default function App() {
   const [authState, setAuthState] = React.useState({
@@ -45,6 +46,9 @@ export default function App() {
         <Switch>
           <Route path="/search">
             <Translation/>
+          </Route>
+          <Route path="/flashcards">
+            <Flashcards/>
           </Route>
           <Route path="/signup">
             <Signup/>

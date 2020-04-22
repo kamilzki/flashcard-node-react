@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+const flashcardRoutes = require('./routes/flashcard');
 const authRoutes = require('./routes/auth');
 const translationRoutes = require('./routes/translation');
 
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/flashcard', flashcardRoutes);
 app.use('/auth', authRoutes);
 app.use('/translation', translationRoutes);
 

@@ -13,11 +13,12 @@ const Translation = (props) => {
   });
   const [loading, setLoading] = React.useState({loading: false, loaded: false, error: false});
 
+  const urlSearchParams = new URLSearchParams(history.location.search);
+
   const fetchTranslations = () => {
-    const params = new URLSearchParams(history.location.search);
-    const wordParam = params.get('word');
-    const fromParam = params.get('from');
-    const toParam = params.get('to');
+    const wordParam = urlSearchParams.get('word');
+    const fromParam = urlSearchParams.get('from');
+    const toParam = urlSearchParams.get('to');
 
     if (wordParam && fromParam && toParam) {
       axiosServerAuth.get(`/translation/${wordParam}?from=${fromParam}&to=${toParam}`, {})
@@ -54,6 +55,10 @@ const Translation = (props) => {
       ...state,
       loading: true
     }));
+    fetchTranslations();
+  }
+
+  if (results.fromWord !== urlSearchParams.get('word')) {
     fetchTranslations();
   }
 

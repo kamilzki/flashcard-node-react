@@ -88,6 +88,10 @@ export default function PrimaryAppBar(props) {
   };
 
   const searchHandler = (event) => {
+    if(event.key !== 'Enter'){
+      return;
+    }
+
     const addQueryParam = (name, current) => {
       if (!current)
         return search[name] !== '' ? `?${name}=` + search[name] : '';

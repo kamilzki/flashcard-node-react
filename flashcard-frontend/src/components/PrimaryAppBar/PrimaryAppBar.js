@@ -1,20 +1,21 @@
 import React from 'react';
+import {
+  Link
+} from "react-router-dom";
+import {useHistory} from "react-router-dom";
+
+import {axiosServer} from "../../helpers/axiosInstance";
 import {fade, makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import InputBase from "@material-ui/core/InputBase";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,14 +64,112 @@ const useStyles = makeStyles((theme) => ({
       width: 'auto',
     },
   },
+  translateTo: {
+    marginLeft: '5px',
+    marginRight: '5px'
+  }
 }));
 
 export default function PrimaryAppBar(props) {
+  const history = useHistory();
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [search, setSearch] = React.useState({
+    word: '',
+    from: 'pl',
+    to: 'de'
+  });
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const onSearchWordChange = (event) => {
+    const newValue = event.target.value;
+    setSearch(state => ({
+      ...state,
+      word: newValue
+    }));
+  };
+
+  const searchHandler = (event) => {
+    if (event.key !== 'Enter') {
+      return;
+    }
+
+    const addQueryParam = (name, current) => {
+      if (!current)
+        return search[name] !== '' ? `?${name}=` + search[name] : '';
+      else {
+        const additionalParam = search[name] !== '' ? `&${name}=` + search[name] : '';
+        return current + additionalParam;
+      }
+    };
+
+    let searchWord = addQueryParam('word');
+    if (searchWord !== '') {
+      if (search.from)
+        searchWord = addQueryParam('from', searchWord);
+      if (search.to)
+        searchWord = addQueryParam('to', searchWord);
+    }
+
+    history.push({
+      pathname: '/search',
+      search: searchWord
+    })
+  };
+
+  const [languages, setLanguages] = React.useState({
+    loading: false,
+    loaded: false,
+    error: false,
+    data: {}
+  });
+
+  const fetchLanguages = () => {
+    axiosServer.get('/translation/languages')
+      .then(result => {
+        const lang = result.data;
+        setLanguages(state => ({
+          ...state,
+          loading: false,
+          loaded: true,
+          data: lang
+        }));
+        return result;
+      })
+      .catch(err => {
+        let message = 'Something go wrong. Please try again later.';
+        if (err.request.response) {
+          message = JSON.parse(err.request.response);
+        }
+        setLanguages(state => ({
+          ...state,
+          loading: false,
+          loaded: false,
+          error: message
+        }));
+      })
+  };
+
+  if (!languages.loading && !languages.error && !languages.loaded) {
+    setLanguages(state => ({
+      ...state,
+      loading: true
+    }));
+    fetchLanguages();
+  }
+
+  const fromLanguageHandler = (event) => {
+    const newFrom = event.target.value;
+    setSearch(state => ({
+      ...state,
+      from: newFrom
+    }));
+  };
+
+  const toLanguageHandler = (event) => {
+    const newFrom = event.target.value;
+    setSearch(state => ({
+      ...state,
+      to: newFrom
+    }));
   };
 
   return (
@@ -81,11 +180,43 @@ export default function PrimaryAppBar(props) {
           <Typography variant="h6" className={classes.title}>
             FlashcardApp
           </Typography>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={search.from}
+            onChange={fromLanguageHandler}
+          >
+            {
+              Object.entries(languages.data)
+                .filter(([key, value]) => search.to !== value)
+                .map(([key, value]) => (
+                  <MenuItem value={value} key={key}>{key}</MenuItem>
+                ))
+            }
+          </Select>
+          <div className={classes.translateTo}>translate to</div>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={search.to}
+            onChange={toLanguageHandler}
+          >
+            {
+              Object.entries(languages.data)
+                .filter(([key, value]) => search.from !== value)
+                .map(([key, value]) => (
+                  <MenuItem value={value} key={key}>{key}</MenuItem>
+                ))
+            }
+          </Select>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon/>
             </div>
             <InputBase
+              value={search.word}
+              onKeyPress={searchHandler}
+              onChange={onSearchWordChange}
               placeholder="Search…"
               classes={{
                 root: classes.inputRoot,
@@ -95,7 +226,7 @@ export default function PrimaryAppBar(props) {
             />
           </div>
           {
-            props.isAuth ?
+            new Date() < new Date(localStorage.getItem('expiryDate')) ?
               <>
                 <Button onClick={props.onLogout}>Logout</Button>
                 <Link to="/flashcards">
@@ -104,7 +235,6 @@ export default function PrimaryAppBar(props) {
                     aria-label="account of current user"
                     aria-controls='primary-search-account-menu'
                     aria-haspopup="true"
-                    onClick={handleProfileMenuOpen}
                     color="inherit"
                   >
                     <AccountCircle/>

@@ -1,0 +1,81 @@
+[
+  {
+    "lang": "pl",
+    "hits": [
+      {
+        "type": "entry",
+        "opendict": false,
+        "roms": [
+          {
+            "headword": "zamek",
+            "headword_full": "zamek<sup>1</sup> <span class=\"flexion\">&lt;<span class=\"info\"><acronym title=\"genitive\">gen</acronym></span> ‑mku, <span class=\"info\"><acronym title=\"plural\">pl</acronym></span> ‑mki&gt;</span> <span class=\"phonetics\">[zamek]</span> <span class=\"wordclass\"><acronym title=\"noun\">N</acronym></span> <span class=\"genus\"><acronym title=\"masculine\">m</acronym></span>",
+            "wordclass": "noun",
+            "arabs": [
+              {
+                "header": "zamek <span class=\"sense\">(budowla)</span>:",
+                "translations": [
+                  {
+                    "source": "<strong class=\"headword\">zamek</strong>",
+                    "target": "Schloss <span class=\"genus\"><acronym title=\"neuter\">nt</acronym></span>"
+                  },
+                  {
+                    "source": "<strong class=\"headword\">zamek</strong>",
+                    "target": "Burg <span class=\"genus\"><acronym title=\"feminine\">f</acronym></span>"
+                  },
+                  {
+                    "source": "<span class=\"example\"><strong class=\"tilde\">zamek</strong> z piasku</span>",
+                    "target": "Sandburg <span class=\"genus\"><acronym title=\"feminine\">f</acronym></span>"
+                  }
+                ]
+              },
+              {
+                "header": "Phrases:",
+                "translations": [
+                  {
+                    "source": "<span class=\"idiom_proverb\">budować zamki na lodzie</span>",
+                    "target": "Luftschlösser bauen <span class=\"rhetoric\"><acronym title=\"figurative\">fig</acronym></span> <span class=\"style\"><acronym title=\"informal\">inf</acronym></span>"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "entry",
+        "opendict": false,
+        "roms": [
+          {
+            "headword": "zamek",
+            "headword_full": "zamek<sup>2</sup> <span class=\"flexion\">&lt;<span class=\"info\"><acronym title=\"genitive\">gen</acronym></span> ‑mka, <span class=\"info\"><acronym title=\"plural\">pl</acronym></span> ‑mki&gt;</span> <span class=\"phonetics\">[zamek]</span> <span class=\"wordclass\"><acronym title=\"noun\">N</acronym></span> <span class=\"genus\"><acronym title=\"masculine\">m</acronym></span>",
+            "wordclass": "noun",
+            "arabs": [
+              {
+                "header": "1. zamek <span class=\"sense\">(w drzwiach, w karabinie)</span>:",
+                "translations": [
+                  {
+                    "source": "<strong class=\"headword\">zamek</strong>",
+                    "target": "Schloss <span class=\"genus\"><acronym title=\"neuter\">nt</acronym></span>"
+                  }
+                ]
+              },
+              {
+                "header": "2. zamek <span class=\"sense\">(suwak)</span>:",
+                "translations": [
+                  {
+                    "source": "<strong class=\"headword\">zamek</strong>",
+                    "target": "Verschluss <span class=\"genus\"><acronym title=\"masculine\">m</acronym></span>"
+                  },
+                  {
+                    "source": "<span class=\"example\"><strong class=\"tilde\">zamek</strong> błyskawiczny</span>",
+                    "target": "Reißverschluss <span class=\"genus\"><acronym title=\"masculine\">m</acronym></span>"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

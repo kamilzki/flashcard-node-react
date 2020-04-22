@@ -88,7 +88,7 @@ export default function PrimaryAppBar(props) {
   };
 
   const searchHandler = (event) => {
-    if(event.key !== 'Enter'){
+    if (event.key !== 'Enter') {
       return;
     }
 
@@ -135,8 +135,11 @@ export default function PrimaryAppBar(props) {
         return result;
       })
       .catch(err => {
-        let message = JSON.parse(err.request.response);
-
+        let message = 'Something go wrong. Please try again later.';
+        console.log(err.request);
+        if (err.request.response) {
+          message = JSON.parse(err.request.response);
+        }
         setLanguages(state => ({
           ...state,
           loading: false,
@@ -154,14 +157,9 @@ export default function PrimaryAppBar(props) {
     fetchLanguages();
   }
 
-  const [fromTo, setFromTo] = React.useState({
-    from: '',
-    to: ''
-  });
-
   const fromLanguageHandler = (event) => {
     const newFrom = event.target.value;
-    setFromTo(state => ({
+    setSearch(state => ({
       ...state,
       from: newFrom
     }));
@@ -169,7 +167,7 @@ export default function PrimaryAppBar(props) {
 
   const toLanguageHandler = (event) => {
     const newFrom = event.target.value;
-    setFromTo(state => ({
+    setSearch(state => ({
       ...state,
       to: newFrom
     }));
@@ -186,12 +184,12 @@ export default function PrimaryAppBar(props) {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={fromTo.from}
+            value={search.from}
             onChange={fromLanguageHandler}
           >
             {
               Object.entries(languages.data)
-                .filter(([key, value]) => fromTo.to !== value)
+                .filter(([key, value]) => search.to !== value)
                 .map(([key, value]) => (
                   <MenuItem value={value} key={key}>{key}</MenuItem>
                 ))
@@ -201,12 +199,12 @@ export default function PrimaryAppBar(props) {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={fromTo.to}
+            value={search.to}
             onChange={toLanguageHandler}
           >
             {
               Object.entries(languages.data)
-                .filter(([key, value]) => fromTo.from !== value)
+                .filter(([key, value]) => search.from !== value)
                 .map(([key, value]) => (
                   <MenuItem value={value} key={key}>{key}</MenuItem>
                 ))

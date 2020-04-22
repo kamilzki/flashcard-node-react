@@ -7,27 +7,31 @@ const Translation = (props) => {
   const history = useHistory();
   const [results, setResults] = React.useState({
     fromWord: "",
-    meanings: [],
+    meanings: null,
     fromLang: "",
     toLang: ""
   });
   const [loading, setLoading] = React.useState({loading: false, loaded: false, error: false});
 
   const urlSearchParams = new URLSearchParams(history.location.search);
+  const wordParam = urlSearchParams.get('word');
+  const fromParam = urlSearchParams.get('from');
+  const toParam = urlSearchParams.get('to');
 
   const fetchTranslations = () => {
-    const wordParam = urlSearchParams.get('word');
-    const fromParam = urlSearchParams.get('from');
-    const toParam = urlSearchParams.get('to');
-
     if (wordParam && fromParam && toParam) {
       axiosServerAuth.get(`/translation/${wordParam}?from=${fromParam}&to=${toParam}`, {})
         .then(result => {
-          if (result.status === 200 && result.data) {
+          console.log('result.data');
+          console.log(result.data);
+          console.log(result.status);
+          if (result.status === 200 || result.status === 204) {
             setResults(state => ({
               ...state,
               fromWord: wordParam,
-              meanings: result.data
+              meanings: result.data,
+              fromLang: fromParam,
+              toLang: toParam
             }));
             setLoading(state => ({
               ...state,
@@ -38,7 +42,11 @@ const Translation = (props) => {
           return result;
         })
         .catch(err => {
-          let message = JSON.parse(err.request.response);
+          let message = {message: 'Something go wrong. Please try again later.'};
+          console.log(err.request);
+          if (err.request.response) {
+            message = JSON.parse(err.request.response);
+          }
 
           setLoading(state => ({
             ...state,
@@ -46,11 +54,19 @@ const Translation = (props) => {
             loaded: false,
             error: message
           }));
+          setResults(state => ({
+            ...state,
+            fromWord: wordParam,
+            fromLang: fromParam,
+            toLang: toParam
+          }));
         })
     }
   };
 
-  if (!loading.loading && !loading.error && !loading.loaded) {
+  let gotResponseFromServer = !loading.error && !loading.loaded;
+  let changedQueryParams = results.fromWord !== wordParam || results.fromLang !== fromParam || results.toLang !== toParam;
+  if (!loading.loading && (gotResponseFromServer || changedQueryParams)) {
     setLoading(state => ({
       ...state,
       loading: true
@@ -58,15 +74,11 @@ const Translation = (props) => {
     fetchTranslations();
   }
 
-  if (results.fromWord !== urlSearchParams.get('word')) {
-    fetchTranslations();
-  }
-
   return <div>
     {
       loading.error ?
         <div>{loading.error.message}</div> :
-        loading.loaded ?
+        loading.loaded && results.meanings ?
           <div>
             {
               results.meanings.map((res, index) => (
@@ -77,7 +89,9 @@ const Translation = (props) => {
               ))
             }
           </div> :
-          <div>LOADING...</div>
+          !results.meanings ?
+            <div>Not found any translations</div> :
+            <div>LOADING...</div>
     }
   </div>;
 };

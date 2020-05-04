@@ -2,6 +2,8 @@ import React from 'react';
 import {axiosServerAuthFunc} from "../../helpers/axiosInstance";
 import Flashcard from "./Flashcard/Flashcard";
 import './Flashcards.css'
+import Alert from "@material-ui/lab/Alert";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const Flashcards = (props) => {
   const [flashcards, setFlashcards] = React.useState(null);
@@ -59,7 +61,9 @@ const Flashcards = (props) => {
   return <div>
     {
       loading.error ?
-        <div>{loading.error.message}</div> :
+        <Alert className="alertInfo" variant="filled" severity="error">
+          {loading.error.message}
+        </Alert> :
         loading.loaded && flashcards && flashcards.length > 0 ?
           <div className="flashcards">
             {
@@ -73,8 +77,10 @@ const Flashcards = (props) => {
             }
           </div> :
           loading.loaded ?
-            <div>Not found any flashcards</div> :
-            <div>LOADING...</div>
+            <Alert className="alertInfo" variant="filled" severity="info">
+              Not found any flashcards
+            </Alert> :
+            <LinearProgress />
     }
   </div>;
 };

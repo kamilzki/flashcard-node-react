@@ -14,23 +14,26 @@ import Flashcards from "./components/Flashcards/Flashcards";
 
 export default function App() {
   const [authState, setAuthState] = React.useState({
-    isAuth: false,
-    token: null,
-    userId: null
+    token: localStorage.getItem('userId'),
+    userId: localStorage.getItem('expiryDate')
   });
-  const authChangeHandler = (isAuth, token, userId) => {
+
+  const authChangeHandler = (token, userId) => {
     setAuthState({
-      isAuth: isAuth,
       token: token,
       userId: userId
     });
   };
 
   const logoutHandler = () => {
-    authChangeHandler(false, null, null);
+    authChangeHandler(null, null);
     localStorage.removeItem('token');
     localStorage.removeItem('expiryDate');
     localStorage.removeItem('userId');
+  };
+
+  const isLogged = () => {
+    return new Date() < new Date(localStorage.getItem('expiryDate'));
   };
 
   return (
@@ -39,6 +42,7 @@ export default function App() {
         <PrimaryAppBar
           isAuth={authState.isAuth}
           onLogout={logoutHandler}
+          isLogged={isLogged}
         />
 
         {/* A <Switch> looks through its children <Route>s and
@@ -55,7 +59,7 @@ export default function App() {
           </Route>
           <Route path="/">
             <div className="App">
-              {!authState.isAuth ?
+              {!isLogged() ?
                 <Login
                   onAuthChange={authChangeHandler}
                   onLogout={logoutHandler}

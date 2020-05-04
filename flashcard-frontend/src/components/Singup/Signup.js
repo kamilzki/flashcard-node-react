@@ -1,16 +1,22 @@
 import React from 'react';
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
+import "./Signup.css";
 import {axiosServer} from "../../helpers/axiosInstance";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Alert from '@material-ui/lab/Alert';
+import Flashcard from "../Flashcards/Flashcard/Flashcard";
 
 export default function Signup(props) {
   const history = useHistory();
-  const email = 'email';
-  const password = 'password';
-  const name = "name";
+  const email = 'Email';
+  const password = 'Password';
+  const name = "Name";
   const [inputsState, setInputsState] = React.useState({
     [email]: "",
     [password]: "",
-    [name]: ""
+    [name]: "",
+    errors: []
   });
 
   const onInputChange = (event) => {
@@ -24,9 +30,9 @@ export default function Signup(props) {
   const onSignup = (event, authData) => {
     event.preventDefault();
     axiosServer.put('/auth/signup', {
-      email: inputsState.email,
-      password: inputsState.password,
-      name: inputsState.name
+      email: inputsState[email],
+      password: inputsState[password],
+      name: inputsState[name]
     })
       .then(res => {
         if (res.status === 422) {
@@ -41,35 +47,65 @@ export default function Signup(props) {
         return res;
       })
       .then(resData => {
-        console.log(resData);
         history.push('/');
       })
       .catch(err => {
-        console.log(err);
+        console.log(err.response.data.data);
+        setInputsState(state => ({
+          ...state,
+          errors: err.response.data.data
+        }));
       });
   };
 
   return (
     <>
+      <div className="errors">
+      {
+        inputsState.errors.map(err => (
+          <Alert variant="filled" severity="error">
+            {err.msg === "Invalid value" ? `${err.msg} - ${err.param}` : err.msg}
+          </Alert>
+        ))
+      }
+      </div>
       <form onSubmit={event => onSignup(event, inputsState)}>
-        <input
-          name={email}
-          onChange={onInputChange}
-          value={inputsState.email}
-        />
-        <input
-          name={name}
-          onChange={onInputChange}
-          value={inputsState.name}
-        />
-        <input
-          name={password}
-          onChange={onInputChange}
-          value={inputsState.password}
-        />
-        <button>
+        <div className="textField">
+          <TextField
+            fullWidth
+            label={email}
+            name={email}
+            onChange={onInputChange}
+            value={inputsState[email]}
+          />
+        </div>
+        <div className="textField">
+          <TextField
+            fullWidth
+            label={name}
+            name={name}
+            onChange={onInputChange}
+            value={inputsState[name]}
+          />
+        </div>
+        <div className="textField">
+          <TextField
+            fullWidth
+            type="password"
+            label={password}
+            name={password}
+            autoComplete="current-password"
+            onChange={onInputChange}
+            value={inputsState[password]}
+          />
+        </div>
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+        >
           Sign Up
-        </button>
+        </Button>
       </form>
     </>
   );

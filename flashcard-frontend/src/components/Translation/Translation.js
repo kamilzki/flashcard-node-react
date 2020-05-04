@@ -2,6 +2,8 @@ import React from 'react';
 import {useHistory} from "react-router-dom";
 import {axiosServerAuthFunc} from "../../helpers/axiosInstance";
 import Meanings from "../Meanings/Meanings";
+import Alert from "@material-ui/lab/Alert";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const Translation = (props) => {
   const history = useHistory();
@@ -74,7 +76,9 @@ const Translation = (props) => {
   return <div>
     {
       loading.error ?
-        <div>{loading.error.message}</div> :
+        <Alert className="alertInfo" variant="filled" severity="error">
+          {loading.error.message}
+        </Alert> :
         loading.loaded && results.meanings ?
           <div>
             {
@@ -89,8 +93,10 @@ const Translation = (props) => {
             }
           </div> :
           !results.meanings ?
-            <div>Not found any translations</div> :
-            <div>LOADING...</div>
+            <Alert className="alertInfo" variant="filled" severity="info">
+              Not found any translations
+            </Alert> :
+            <LinearProgress />
     }
   </div>;
 };

@@ -12,6 +12,12 @@ router.get(
 );
 
 router.get(
+  '/suggestion/:queryWord',
+  isAuth,
+  transaltionController.getSuggestions
+);
+
+router.get(
   '/:queryWord',
   isAuth,
   transaltionController.getTranslations

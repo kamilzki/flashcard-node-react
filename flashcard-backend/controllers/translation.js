@@ -3,6 +3,7 @@ const {axiosPons} = require('../helpers/axiosInstance');
 const querystring = require('querystring');
 const fs = require('fs');
 const path = require('path');
+const axios = require('axios');
 
 const languages = {
   Polish: 'pl',
@@ -53,6 +54,38 @@ exports.getTranslations = async (req, res, next) => {
         else
           return null;
       }).filter(hitResult => hitResult)
+    });
+
+    console.log(resultBody);
+    res.status(200).json(resultBody);
+  } catch (err) {
+    if (!err.response || !err.response.status) {
+      err.statusCode = 500;
+    }
+    next(err);
+    return err;
+  }
+};
+
+exports.getSuggestions = async (req, res, next) => {
+  try {
+    const queryWord = req.params.queryWord;
+    const from = req.query.from;
+    const to = req.query.to;
+
+    if (!isValidLanguageCode(from) || !isValidLanguageCode(to)) {
+      return res.status(404).json({message: 'Bad language code.'});
+    }
+
+    const languageCode = to + from;
+
+    const queryResult = await axios.get("https://pons.com/dict/search/autocomplete-json/?" + querystring.stringify({l: languageCode, q: queryWord}));
+    if (queryResult.status === 204) {
+      return res.status(204).json({message: queryResult.statusText});
+    }
+    const resultBody = queryResult.data.flatMap(it => {
+      console.log(it);
+      return it
     });
 
     console.log(resultBody);

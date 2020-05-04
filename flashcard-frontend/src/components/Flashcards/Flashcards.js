@@ -60,7 +60,9 @@ const Flashcards = (props) => {
   return <div>
     {
       loading.error ?
-        <div>{loading.error.message}</div> :
+        <Alert className="alertInfo" variant="filled" severity="error">
+          {loading.error.message}
+        </Alert> :
         loading.loaded && flashcards && flashcards.length > 0 ?
           <div className="flashcards">
             {

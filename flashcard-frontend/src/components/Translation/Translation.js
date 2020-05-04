@@ -75,7 +75,9 @@ const Translation = (props) => {
   return <div>
     {
       loading.error ?
-        <div>{loading.error.message}</div> :
+        <Alert className="alertInfo" variant="filled" severity="error">
+          {loading.error.message}
+        </Alert> :
         loading.loaded && results.meanings ?
           <div>
             {

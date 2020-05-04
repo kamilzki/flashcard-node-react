@@ -186,54 +186,54 @@ export default function PrimaryAppBar(props) {
           <Typography variant="h6" className={classes.title} onClick={linkToHome}>
             FlashcardApp
           </Typography>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={search.from}
-            onChange={fromLanguageHandler}
-          >
-            {
-              Object.entries(languages.data)
-                .filter(([key, value]) => search.to !== value)
-                .map(([key, value]) => (
-                  <MenuItem value={value} key={key}>{key}</MenuItem>
-                ))
-            }
-          </Select>
-          <div className={classes.translateTo}>translate to</div>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={search.to}
-            onChange={toLanguageHandler}
-          >
-            {
-              Object.entries(languages.data)
-                .filter(([key, value]) => search.from !== value)
-                .map(([key, value]) => (
-                  <MenuItem value={value} key={key}>{key}</MenuItem>
-                ))
-            }
-          </Select>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon/>
-            </div>
-            <InputBase
-              value={search.word}
-              onKeyPress={searchHandler}
-              onChange={onSearchWordChange}
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{'aria-label': 'search'}}
-            />
-          </div>
           {
-            new Date() < new Date(localStorage.getItem('expiryDate')) ?
+            props.isLogged() ?
               <>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={search.from}
+                  onChange={fromLanguageHandler}
+                >
+                  {
+                    Object.entries(languages.data)
+                      .filter(([key, value]) => search.to !== value)
+                      .map(([key, value]) => (
+                        <MenuItem value={value} key={key}>{key}</MenuItem>
+                      ))
+                  }
+                </Select>
+                <div className={classes.translateTo}>translate to</div>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={search.to}
+                  onChange={toLanguageHandler}
+                >
+                  {
+                    Object.entries(languages.data)
+                      .filter(([key, value]) => search.from !== value)
+                      .map(([key, value]) => (
+                        <MenuItem value={value} key={key}>{key}</MenuItem>
+                      ))
+                  }
+                </Select>
+                <div className={classes.search}>
+                  <div className={classes.searchIcon}>
+                    <SearchIcon/>
+                  </div>
+                  <InputBase
+                    value={search.word}
+                    onKeyPress={searchHandler}
+                    onChange={onSearchWordChange}
+                    placeholder="Search…"
+                    classes={{
+                      root: classes.inputRoot,
+                      input: classes.inputInput,
+                    }}
+                    inputProps={{'aria-label': 'search'}}
+                  />
+                </div>
                 <Button onClick={props.onLogout}>Logout</Button>
                 <Link to="/flashcards">
                   <IconButton

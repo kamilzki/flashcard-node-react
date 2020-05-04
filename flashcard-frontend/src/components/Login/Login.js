@@ -50,12 +50,12 @@ const Login = (props) => {
           new Date().getTime() + remainingMilliseconds
         );
         localStorage.setItem('expiryDate', expiryDate.toISOString());
-        props.onAuthChange(true, resData.token, resData.userId);
+        props.onAuthChange(resData.token, resData.userId);
         setAutoLogout(remainingMilliseconds);
       })
       .catch(err => {
         console.log(err);
-        props.onAuthChange(false, null, null);
+        props.onAuthChange(null, null);
       });
   };
 

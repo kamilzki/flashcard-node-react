@@ -1,0 +1,20 @@
+form {
+  margin: 1% 30% 0 30%;
+  text-align: center;
+}
+
+button {
+  margin-top: 10px;;
+}
+
+.errors {
+  margin: 1% 15% 0 15%;
+}
+
+.errors > div {
+  margin-bottom: 5px;
+}
+
+.textField {
+  margin-bottom: 10px;
+}

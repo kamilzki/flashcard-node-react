@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    cursor: 'pointer'
   },
   inputRoot: {
     color: 'inherit',
@@ -172,12 +173,17 @@ export default function PrimaryAppBar(props) {
     }));
   };
 
+  const linkToHome = () => {
+    history.push({
+      pathname: '/'
+    })
+  };
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <Link to="/">Home</Link>
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6" className={classes.title} onClick={linkToHome}>
             FlashcardApp
           </Typography>
           <Select

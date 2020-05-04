@@ -14,10 +14,11 @@ import Flashcards from "./components/Flashcards/Flashcards";
 
 export default function App() {
   const [authState, setAuthState] = React.useState({
-    isAuth: false,
-    token: null,
-    userId: null
+    isAuth: localStorage.getItem('token') != null,
+    token: localStorage.getItem('userId'),
+    userId: localStorage.getItem('expiryDate')
   });
+
   const authChangeHandler = (isAuth, token, userId) => {
     setAuthState({
       isAuth: isAuth,

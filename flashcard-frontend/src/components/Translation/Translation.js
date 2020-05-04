@@ -3,6 +3,7 @@ import {useHistory} from "react-router-dom";
 import {axiosServerAuthFunc} from "../../helpers/axiosInstance";
 import Meanings from "../Meanings/Meanings";
 import Alert from "@material-ui/lab/Alert";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const Translation = (props) => {
   const history = useHistory();
@@ -95,7 +96,7 @@ const Translation = (props) => {
             <Alert className="alertInfo" variant="filled" severity="info">
               Not found any translations
             </Alert> :
-            <div>LOADING...</div>
+            <LinearProgress />
     }
   </div>;
 };

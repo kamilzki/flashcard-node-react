@@ -1,9 +1,12 @@
 import React from 'react';
+import './Login.css';
 import {axiosServer} from '../../helpers/axiosInstance';
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 
 const Login = (props) => {
-  const email = 'email';
-  const password = 'password';
+  const email = 'Email';
+  const password = 'Password';
   const [inputsState, setInputsState] = React.useState({
     [email]: "",
     [password]: ""
@@ -11,6 +14,7 @@ const Login = (props) => {
 
   const onInputChange = (event) => {
     event.persist();
+    console.log(event.target.name, event.target.value);
     setInputsState(state => ({
       ...state,
       [event.target.name]: event.target.value
@@ -26,11 +30,11 @@ const Login = (props) => {
   const loginHandler = (event, authData) => {
     event.preventDefault();
     // this.setState({ authLoading: true });
-
+    console.log('loginHandler');
     axiosServer.post('/auth/login', {
-          email: authData.email,
-          password: authData.password
-        })
+      email: authData.email,
+      password: authData.password
+    })
       .then(res => {
         if (res.status === 422) {
           throw new Error('Validation failed.');
@@ -64,24 +68,38 @@ const Login = (props) => {
       <form
         onSubmit={e =>
           loginHandler(e, {
-            email: inputsState.email,
-            password: inputsState.password
+            email: inputsState[email],
+            password: inputsState[password]
           })
         }
       >
-        <input
-          name={email}
-          onChange={onInputChange}
-          value={inputsState.email}
-        />
-        <input
-          name={password}
-          onChange={onInputChange}
-          value={inputsState.password}
-        />
-        <button>
+        <div className="textField">
+          <TextField
+            fullWidth
+            label={email}
+            name={email}
+            onChange={onInputChange}
+            value={inputsState[email]}
+          />
+        </div>
+        <div className="textField">
+          <TextField
+            fullWidth
+            type="password"
+            label={password}
+            name={password}
+            autoComplete="current-password"
+            onChange={onInputChange}
+            value={inputsState[password]}
+          />
+        </div>
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+        >
           Login
-        </button>
+        </Button>
       </form>
     </>
   );

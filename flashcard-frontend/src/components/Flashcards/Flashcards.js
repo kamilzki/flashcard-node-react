@@ -2,6 +2,7 @@ import React from 'react';
 import {axiosServerAuthFunc} from "../../helpers/axiosInstance";
 import Flashcard from "./Flashcard/Flashcard";
 import './Flashcards.css'
+import Alert from "@material-ui/lab/Alert";
 
 const Flashcards = (props) => {
   const [flashcards, setFlashcards] = React.useState(null);
@@ -73,7 +74,9 @@ const Flashcards = (props) => {
             }
           </div> :
           loading.loaded ?
-            <div>Not found any flashcards</div> :
+            <Alert className="alertInfo" variant="filled" severity="info">
+              Not found any flashcards
+            </Alert> :
             <div>LOADING...</div>
     }
   </div>;

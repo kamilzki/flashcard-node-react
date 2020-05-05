@@ -41,7 +41,6 @@ export default function Signup(props) {
           );
         }
         if (res.status !== 200 && res.status !== 201) {
-          console.log('Error!');
           throw new Error('Creating a user failed!');
         }
         return res;
@@ -50,7 +49,6 @@ export default function Signup(props) {
         history.push('/');
       })
       .catch(err => {
-        console.log(err.response.data.data);
         setInputsState(state => ({
           ...state,
           errors: err.response.data.data

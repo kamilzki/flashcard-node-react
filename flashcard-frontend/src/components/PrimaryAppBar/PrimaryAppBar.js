@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  Link
-} from "react-router-dom";
-import {useHistory} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 
 import {axiosServer, axiosServerAuthFunc} from "../../helpers/axiosInstance";
 import {fade, makeStyles} from '@material-ui/core/styles';
@@ -11,7 +8,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import InputBase from "@material-ui/core/InputBase";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -119,6 +115,8 @@ export default function PrimaryAppBar(props) {
     data: {}
   });
 
+  const [loadingSuggestions, setLoadingSuggestions] = React.useState(false);
+
   const fetchLanguages = () => {
     axiosServer.get('/translation/languages')
       .then(result => {
@@ -146,6 +144,7 @@ export default function PrimaryAppBar(props) {
   };
 
   const fetchSuggestions = () => {
+    setLoadingSuggestions(() => true);
     axiosServerAuthFunc().get(`/translation/suggestion/${search.wordSearch}?from=${search.from}&to=${search.to}`, {})
       .then(result => {
         if (result.status === 200 || result.status === 204) {
@@ -273,7 +272,7 @@ export default function PrimaryAppBar(props) {
                       }));
                     }}
                     getOptionSelected={(option, value) => option.label === value.label}
-                    getOptionLabel={(option) => option.value}
+                    getOptionLabel={(option) => option.value ? option.value : ''}
                     options={search.suggestions}
                     loading={loadingSuggestions}
                     renderInput={(params) => (

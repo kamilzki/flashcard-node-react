@@ -92,7 +92,7 @@ const Translation = (props) => {
               ))
             }
           </div> :
-          !results.meanings ?
+          loading.loaded ?
             <Alert className="alertInfo" variant="filled" severity="info">
               Not found any translations
             </Alert> :

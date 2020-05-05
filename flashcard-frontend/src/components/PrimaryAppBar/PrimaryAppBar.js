@@ -206,7 +206,7 @@ export default function PrimaryAppBar(props) {
 
   React.useEffect(() => {
     searchHandler();
-  }, [search.word]);
+  }, [search.word, search.from, search.to]);
 
   return (
     <div className={classes.root}>

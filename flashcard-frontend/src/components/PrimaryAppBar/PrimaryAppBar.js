@@ -2,6 +2,8 @@ import React from 'react';
 import {Link, useHistory} from "react-router-dom";
 
 import {axiosServer, axiosServerAuthFunc} from "../../helpers/axiosInstance";
+import {useDebounce} from 'use-debounce';
+
 import {fade, makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -79,8 +81,8 @@ export default function PrimaryAppBar(props) {
   const [search, setSearch] = React.useState({
     word: wordParam ? wordParam : '',
     wordSearch: wordParam ? wordParam : '',
-    from: urlSearchParams.get('from'),
-    to: urlSearchParams.get('to'),
+    from: urlSearchParams.get('from') || 'pl',
+    to: urlSearchParams.get('to') || 'de',
     suggestions: wordParam ? [wordParam] : [],
   });
 
@@ -205,11 +207,13 @@ export default function PrimaryAppBar(props) {
 
   const [open, setOpen] = React.useState(false);
 
+  const [debouncedText] = useDebounce(search.wordSearch, 500);
+
   React.useEffect(() => {
     if (search.wordSearch) {
       fetchSuggestions();
     }
-  }, [search.wordSearch]);
+  }, [debouncedText]);
 
   React.useEffect(() => {
     searchHandler();

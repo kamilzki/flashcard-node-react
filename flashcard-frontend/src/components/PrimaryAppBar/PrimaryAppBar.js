@@ -216,7 +216,9 @@ export default function PrimaryAppBar(props) {
   }, [debouncedText]);
 
   React.useEffect(() => {
-    searchHandler();
+    if (search.word && search.from && search.to) {
+      searchHandler();
+    }
   }, [search.word, search.from, search.to]);
 
   return (

@@ -14,19 +14,21 @@ import Flashcards from "./components/Flashcards/Flashcards";
 
 export default function App() {
   const [authState, setAuthState] = React.useState({
-    token: localStorage.getItem('userId'),
-    userId: localStorage.getItem('expiryDate')
+    token: localStorage.getItem('token'),
+    userId: localStorage.getItem('userId'),
+    expiryDate: localStorage.getItem('expiryDate')
   });
 
-  const authChangeHandler = (token, userId) => {
+  const authChangeHandler = (token, userId, expiryDate) => {
     setAuthState({
       token: token,
-      userId: userId
+      userId: userId,
+      expiryDate: expiryDate
     });
   };
 
   const logoutHandler = () => {
-    authChangeHandler(null, null);
+    authChangeHandler(null, null, null);
     localStorage.removeItem('token');
     localStorage.removeItem('expiryDate');
     localStorage.removeItem('userId');
@@ -36,13 +38,20 @@ export default function App() {
     return new Date() < new Date(localStorage.getItem('expiryDate'));
   };
 
+  const isLoggedLogic = () => {
+    const isLoggedNow = isLogged();
+    if (authState.expiryDate && !isLoggedNow) {
+      authChangeHandler(null, null, null);
+    }
+    return isLoggedNow;
+  };
+
   return (
     <Router>
       <div>
         <PrimaryAppBar
-          isAuth={authState.isAuth}
           onLogout={logoutHandler}
-          isLogged={isLogged}
+          isLogged={isLoggedLogic}
         />
 
         {/* A <Switch> looks through its children <Route>s and
@@ -59,13 +68,7 @@ export default function App() {
           </Route>
           <Route path="/">
             <div className="App">
-              {!isLogged() ?
-                <Login
-                  onAuthChange={authChangeHandler}
-                  onLogout={logoutHandler}
-                /> :
-                null
-              }
+              {!isLoggedLogic() ? <Login onAuthChange={authChangeHandler}/> : null}
             </div>
           </Route>
         </Switch>

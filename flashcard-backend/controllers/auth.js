@@ -68,7 +68,7 @@ exports.login = async (req, res, next) => {
         userId: loadedUser._id.toString()
       },
       'somesupersecretsecret',
-      { expiresIn: '1m' }
+      { expiresIn: '1h' }
     );
 
     const remainingMilliseconds = 60 * 60 * 1000;

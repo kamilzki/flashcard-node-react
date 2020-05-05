@@ -14,7 +14,6 @@ const Login = (props) => {
 
   const onInputChange = (event) => {
     event.persist();
-    console.log(event.target.name, event.target.value);
     setInputsState(state => ({
       ...state,
       [event.target.name]: event.target.value
@@ -30,7 +29,6 @@ const Login = (props) => {
   const loginHandler = (event, authData) => {
     event.preventDefault();
     // this.setState({ authLoading: true });
-    console.log('loginHandler');
     axiosServer.post('/auth/login', {
       email: authData.email,
       password: authData.password
@@ -40,13 +38,11 @@ const Login = (props) => {
           throw new Error('Validation failed.');
         }
         if (res.status !== 200 && res.status !== 201) {
-          console.log('Error!');
           throw new Error('Could not authenticate you!');
         }
         return res.data;
       })
       .then(resData => {
-        console.log(resData);
         localStorage.setItem('token', resData.token);
         localStorage.setItem('userId', resData.userId);
         const remainingMilliseconds = 60 * 60 * 1000;
@@ -58,7 +54,6 @@ const Login = (props) => {
         setAutoLogout(remainingMilliseconds);
       })
       .catch(err => {
-        console.log(err);
         props.onAuthChange(null, null);
       });
   };

@@ -1,21 +1,23 @@
 import React from 'react';
-import {
-  Link
-} from "react-router-dom";
-import {useHistory} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 
-import {axiosServer} from "../../helpers/axiosInstance";
+import {axiosServer, axiosServerAuthFunc} from "../../helpers/axiosInstance";
+import {useDebounce} from 'use-debounce';
+
 import {fade, makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import InputBase from "@material-ui/core/InputBase";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import TextField from "@material-ui/core/TextField";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import InputAdornment from "@material-ui/core/InputAdornment";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,25 +76,18 @@ const useStyles = makeStyles((theme) => ({
 export default function PrimaryAppBar(props) {
   const history = useHistory();
   const classes = useStyles();
+  const urlSearchParams = new URLSearchParams(history.location.search);
+  const wordParam = urlSearchParams.get('word');
   const [search, setSearch] = React.useState({
-    word: '',
-    from: 'pl',
-    to: 'de'
+    word: wordParam ? wordParam : '',
+    wordSearch: wordParam ? wordParam : '',
+    from: urlSearchParams.get('from') || 'pl',
+    to: urlSearchParams.get('to') || 'de',
+    suggestions: wordParam ? [wordParam] : [],
   });
 
-  const onSearchWordChange = (event) => {
-    const newValue = event.target.value;
-    setSearch(state => ({
-      ...state,
-      word: newValue
-    }));
-  };
-
-  const searchHandler = (event) => {
-    if (event.key !== 'Enter') {
-      return;
-    }
-
+  const searchHandler = () => {
+    console.log('searchHandler');
     const addQueryParam = (name, current) => {
       if (!current)
         return search[name] !== '' ? `?${name}=` + search[name] : '';
@@ -113,7 +108,7 @@ export default function PrimaryAppBar(props) {
     history.push({
       pathname: '/search',
       search: searchWord
-    })
+    });
   };
 
   const [languages, setLanguages] = React.useState({
@@ -122,6 +117,8 @@ export default function PrimaryAppBar(props) {
     error: false,
     data: {}
   });
+
+  const [loadingSuggestions, setLoadingSuggestions] = React.useState(false);
 
   const fetchLanguages = () => {
     axiosServer.get('/translation/languages')
@@ -149,6 +146,29 @@ export default function PrimaryAppBar(props) {
       })
   };
 
+  const fetchSuggestions = () => {
+    setLoadingSuggestions(() => true);
+    axiosServerAuthFunc().get(`/translation/suggestion/${search.wordSearch}?from=${search.from}&to=${search.to}`, {})
+      .then(result => {
+        if (result.status === 200 || result.status === 204) {
+          setSearch(state => ({
+            ...state,
+            suggestions: result.data
+          }));
+        }
+        setLoadingSuggestions(() => false);
+
+        return result;
+      })
+      .catch(err => {
+        setSearch(state => ({
+          ...state,
+          suggestions: []
+        }));
+        setLoadingSuggestions(() => false);
+      })
+  };
+
   if (!languages.loading && !languages.error && !languages.loaded) {
     setLanguages(state => ({
       ...state,
@@ -161,7 +181,10 @@ export default function PrimaryAppBar(props) {
     const newFrom = event.target.value;
     setSearch(state => ({
       ...state,
-      from: newFrom
+      from: newFrom,
+      word: '',
+      wordSearch: '',
+      suggestions: []
     }));
   };
 
@@ -169,7 +192,10 @@ export default function PrimaryAppBar(props) {
     const newFrom = event.target.value;
     setSearch(state => ({
       ...state,
-      to: newFrom
+      to: newFrom,
+      word: '',
+      wordSearch: '',
+      suggestions: []
     }));
   };
 
@@ -178,6 +204,22 @@ export default function PrimaryAppBar(props) {
       pathname: '/'
     })
   };
+
+  const [open, setOpen] = React.useState(false);
+
+  const [debouncedText] = useDebounce(search.wordSearch, 500);
+
+  React.useEffect(() => {
+    if (search.wordSearch) {
+      fetchSuggestions();
+    }
+  }, [debouncedText]);
+
+  React.useEffect(() => {
+    if (search.word && search.from && search.to) {
+      searchHandler();
+    }
+  }, [search.word, search.from, search.to]);
 
   return (
     <div className={classes.root}>
@@ -219,19 +261,60 @@ export default function PrimaryAppBar(props) {
                   }
                 </Select>
                 <div className={classes.search}>
-                  <div className={classes.searchIcon}>
-                    <SearchIcon/>
-                  </div>
-                  <InputBase
-                    value={search.word}
-                    onKeyPress={searchHandler}
-                    onChange={onSearchWordChange}
-                    placeholder="Search…"
-                    classes={{
-                      root: classes.inputRoot,
-                      input: classes.inputInput,
+                  <Autocomplete
+                    autoHighlight={true}
+                    style={{width: 300}}
+                    open={open}
+                    onOpen={() => {
+                      setOpen(true);
+                      if (search.wordSearch)
+                        fetchSuggestions()
                     }}
-                    inputProps={{'aria-label': 'search'}}
+                    onClose={() => {
+                      setOpen(false);
+                    }}
+                    inputValue={search.wordSearch}
+                    value={search.word}
+                    onChange={(event, newInputValue) => {
+                      const newValue = newInputValue ? newInputValue.value : "";
+                      setSearch(state => ({
+                        ...state,
+                        word: newValue,
+                        wordSearch: newValue
+                      }));
+                    }}
+                    getOptionSelected={(option, value) => option.label === value.label}
+                    getOptionLabel={(option) => option.value ? option.value : ''}
+                    options={search.suggestions}
+                    loading={loadingSuggestions}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        placeholder="Search…"
+                        onChange={event => {
+                          const newValue = event.target.value;
+                          setSearch(state => ({
+                            ...state,
+                            wordSearch: newValue
+                          }));
+                        }}
+                        InputProps={{
+                          ...params.InputProps,
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <SearchIcon/>
+                            </InputAdornment>
+                          ),
+                          endAdornment: (
+                            <React.Fragment>
+                              {loadingSuggestions ? <CircularProgress color="inherit" size={20}/> : null}
+                              {params.InputProps.endAdornment}
+                            </React.Fragment>
+                          ),
+                        }}
+                      />
+                    )}
                   />
                 </div>
                 <Button onClick={props.onLogout}>Logout</Button>

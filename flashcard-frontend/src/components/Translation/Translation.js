@@ -22,6 +22,12 @@ const Translation = (props) => {
 
   const fetchTranslations = () => {
     if (wordParam && fromParam && toParam) {
+      setLoading(state => ({
+        ...state,
+        loading: true,
+        error: false
+      }));
+
       axiosServerAuthFunc().get(`/translation/${wordParam}?from=${fromParam}&to=${toParam}`, {})
         .then(result => {
           if (result.status === 200 || result.status === 204) {
@@ -66,10 +72,6 @@ const Translation = (props) => {
   let gotResponseFromServer = !loading.error && !loading.loaded;
   let changedQueryParams = results.fromWord !== wordParam || results.fromLang !== fromParam || results.toLang !== toParam;
   if (!loading.loading && (gotResponseFromServer || changedQueryParams)) {
-    setLoading(state => ({
-      ...state,
-      loading: true
-    }));
     fetchTranslations();
   }
 
@@ -92,7 +94,7 @@ const Translation = (props) => {
               ))
             }
           </div> :
-          !results.meanings ?
+          !loading.loading ?
             <Alert className="alertInfo" variant="filled" severity="info">
               Not found any translations
             </Alert> :

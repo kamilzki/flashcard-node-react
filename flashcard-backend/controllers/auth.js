@@ -68,9 +68,13 @@ exports.login = async (req, res, next) => {
         userId: loadedUser._id.toString()
       },
       'somesupersecretsecret',
-      { expiresIn: '1h' }
+      { expiresIn: '1m' }
     );
-    res.status(200).json({ token: token, userId: loadedUser._id.toString() });
+
+    const remainingMilliseconds = 60 * 60 * 1000;
+    const expiryDate = new Date(new Date().getTime() + remainingMilliseconds);
+
+    res.status(200).json({ token: token, userId: loadedUser._id.toString(), expiryDate: expiryDate.toISOString()});
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

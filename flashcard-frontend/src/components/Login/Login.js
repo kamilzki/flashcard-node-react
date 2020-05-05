@@ -20,12 +20,6 @@ const Login = (props) => {
     }));
   };
 
-  const setAutoLogout = milliseconds => {
-    setTimeout(() => {
-      props.onLogout();
-    }, milliseconds);
-  };
-
   const loginHandler = (event, authData) => {
     event.preventDefault();
     // this.setState({ authLoading: true });
@@ -45,13 +39,9 @@ const Login = (props) => {
       .then(resData => {
         localStorage.setItem('token', resData.token);
         localStorage.setItem('userId', resData.userId);
-        const remainingMilliseconds = 60 * 60 * 1000;
-        const expiryDate = new Date(
-          new Date().getTime() + remainingMilliseconds
-        );
-        localStorage.setItem('expiryDate', expiryDate.toISOString());
-        props.onAuthChange(resData.token, resData.userId);
-        setAutoLogout(remainingMilliseconds);
+        localStorage.setItem('expiryDate', resData.expiryDate);
+
+        props.onAuthChange(resData.token, resData.userId, resData.expiryDate);
       })
       .catch(err => {
         props.onAuthChange(null, null);

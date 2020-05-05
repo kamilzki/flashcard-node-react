@@ -79,12 +79,13 @@ export default function PrimaryAppBar(props) {
   const [search, setSearch] = React.useState({
     word: wordParam ? wordParam : '',
     wordSearch: wordParam ? wordParam : '',
-    from: 'pl',
-    to: 'de',
+    from: urlSearchParams.get('from'),
+    to: urlSearchParams.get('to'),
     suggestions: wordParam ? [wordParam] : [],
   });
 
   const searchHandler = () => {
+    console.log('searchHandler');
     const addQueryParam = (name, current) => {
       if (!current)
         return search[name] !== '' ? `?${name}=` + search[name] : '';
@@ -178,7 +179,10 @@ export default function PrimaryAppBar(props) {
     const newFrom = event.target.value;
     setSearch(state => ({
       ...state,
-      from: newFrom
+      from: newFrom,
+      word: '',
+      wordSearch: '',
+      suggestions: []
     }));
   };
 
@@ -186,7 +190,10 @@ export default function PrimaryAppBar(props) {
     const newFrom = event.target.value;
     setSearch(state => ({
       ...state,
-      to: newFrom
+      to: newFrom,
+      word: '',
+      wordSearch: '',
+      suggestions: []
     }));
   };
 
@@ -249,7 +256,7 @@ export default function PrimaryAppBar(props) {
                 </Select>
                 <div className={classes.search}>
                   <Autocomplete
-                    freeSolo
+                    autoHighlight={true}
                     style={{width: 300}}
                     open={open}
                     onOpen={() => {
@@ -260,7 +267,6 @@ export default function PrimaryAppBar(props) {
                     onClose={() => {
                       setOpen(false);
                     }}
-                    // onKeyPress={searchHandler}
                     inputValue={search.wordSearch}
                     value={search.word}
                     onChange={(event, newInputValue) => {

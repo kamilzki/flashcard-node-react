@@ -24,7 +24,8 @@ const Translation = (props) => {
     if (wordParam && fromParam && toParam) {
       setLoading(state => ({
         ...state,
-        loading: true
+        loading: true,
+        error: false
       }));
 
       axiosServerAuthFunc().get(`/translation/${wordParam}?from=${fromParam}&to=${toParam}`, {})

@@ -4,9 +4,12 @@ import {axiosServerAuthFunc} from "../../helpers/axiosInstance";
 import Meanings from "../Meanings/Meanings";
 import Alert from "@material-ui/lab/Alert";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import {useSelector} from "react-redux";
 
 const Translation = (props) => {
   const history = useHistory();
+  const flashcards = useSelector((state) => state.flashcards);
+
   const [results, setResults] = React.useState({
     fromWord: "",
     meanings: null,
@@ -49,7 +52,7 @@ const Translation = (props) => {
         })
         .catch(err => {
           let message = {message: 'Something go wrong. Please try again later.'};
-          if (err.request.response) {
+          if (err.request && err.request.response) {
             message = JSON.parse(err.request.response);
           }
 
@@ -75,6 +78,14 @@ const Translation = (props) => {
     fetchTranslations();
   }
 
+  const getFlashcard = (from, to, fromLang, toLang) => {
+    return flashcards.find(flashcard => flashcard.from === from &&
+      flashcard.to[0] === to &&
+      flashcard.fromLang === fromLang &&
+      flashcard.toLang === toLang
+    );
+  };
+
   return <div>
     {
       loading.error ?
@@ -86,6 +97,7 @@ const Translation = (props) => {
             {
               results.meanings.map((res, index) => (
                 <Meanings
+                  getFlashcard={getFlashcard}
                   translations={res}
                   fromLang={results.fromLang}
                   toLang={results.toLang}
@@ -98,7 +110,7 @@ const Translation = (props) => {
             <Alert className="alertInfo" variant="filled" severity="info">
               Not found any translations
             </Alert> :
-            <LinearProgress />
+            <LinearProgress/>
     }
   </div>;
 };

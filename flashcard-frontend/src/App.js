@@ -1,23 +1,23 @@
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from "react-router-dom";
-
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
 import './App.css';
+
+import {fetchFlashcards} from "./redux/actions/rootAction";
+
 import Login from "./components/Login/Login";
 import Signup from "./components/Singup/Signup";
 import PrimaryAppBar from "./components/PrimaryAppBar/PrimaryAppBar";
 import Translation from "./components/Translation/Translation";
 import Flashcards from "./components/Flashcards/Flashcards";
 
-export default function App() {
+export default function App({store}) {
   const [authState, setAuthState] = React.useState({
     token: localStorage.getItem('token'),
     userId: localStorage.getItem('userId'),
     expiryDate: localStorage.getItem('expiryDate')
   });
+  const dispatch = useDispatch();
 
   const authChangeHandler = (token, userId, expiryDate) => {
     setAuthState({
@@ -45,6 +45,10 @@ export default function App() {
     }
     return isLoggedNow;
   };
+
+  if (isLogged()) {
+    dispatch(fetchFlashcards());
+  }
 
   return (
     <Router>

@@ -1,68 +1,41 @@
 import React from 'react';
-import {axiosServerAuthFunc} from "../../helpers/axiosInstance";
-import Flashcard from "./Flashcard/Flashcard";
+import {useDispatch, useSelector} from "react-redux";
 import './Flashcards.css'
+
+import {closeSnackbar, openSnackbar, removeFlashcard} from "../../redux/actions/rootAction";
+
+import Flashcard from "./Flashcard/Flashcard";
 import Alert from "@material-ui/lab/Alert";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import {axiosServerAuthFunc} from "../../helpers/axiosInstance";
+import {getErrorMessage, SUCCESSFULLY_DELETED} from "../../helpers/messageHelper";
 
 const Flashcards = (props) => {
-  const [flashcards, setFlashcards] = React.useState(null);
-  const [loading, setLoading] = React.useState({loading: false, loaded: false, error: false});
-
-  const fetchFlashcards = () => {
-    axiosServerAuthFunc().get(`/flashcard/all`)
-      .then(result => {
-        if (result.status === 200 || result.status === 204) {
-          setFlashcards(state => (result.data.flashcards));
-          setLoading(state => ({
-            ...state,
-            loading: false,
-            loaded: true
-          }));
-        }
-        return result;
-      })
-      .catch(err => {
-        let message = {message: 'Something go wrong. Please try again later.'};
-        if (err.request && err.request.response) {
-          message = JSON.parse(err.request.response);
-        }
-
-        setLoading(state => ({
-          ...state,
-          loading: false,
-          loaded: false,
-          error: message
-        }));
-        setFlashcards(state => ([]));
-      })
-  };
+  const loading = useSelector((state) => state.flashcards.flashcardsLoading);
+  const flashcards = useSelector((state) => state.flashcards.flashcards);
+  const dispatch = useDispatch();
 
   const removeFlashcardHandler = (flashcardId) => {
+    dispatch(closeSnackbar());
     axiosServerAuthFunc().delete('/flashcard/' + flashcardId)
       .then(_ => {
-        const withoutDeleted = flashcards.filter(it => it._id !== flashcardId);
-        setFlashcards(state => (withoutDeleted));
+        dispatch(openSnackbar(SUCCESSFULLY_DELETED, "success"));
+        dispatch(removeFlashcard(flashcardId));
       })
       .catch(err => {
-
+        const message = getErrorMessage(err);
+        if (message === "Could not find.") {
+          dispatch(removeFlashcard(flashcardId));
+        }
+        dispatch(openSnackbar(message, "error"));
       })
   };
-
-  let gotResponseFromServer = !loading.error && !loading.loaded;
-  if (!loading.loading && gotResponseFromServer) {
-    setLoading(state => ({
-      ...state,
-      loading: true
-    }));
-    fetchFlashcards();
-  }
 
   return <div>
     {
       loading.error ?
         <Alert className="alertInfo" variant="filled" severity="error">
-          {loading.error.message}
+          {loading.error}
         </Alert> :
         loading.loaded && flashcards && flashcards.length > 0 ?
           <div className="flashcards">
@@ -80,7 +53,7 @@ const Flashcards = (props) => {
             <Alert className="alertInfo" variant="filled" severity="info">
               Not found any flashcards
             </Alert> :
-            <LinearProgress />
+            <LinearProgress/>
     }
   </div>;
 };

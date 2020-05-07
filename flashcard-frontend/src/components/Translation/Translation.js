@@ -4,9 +4,13 @@ import {axiosServerAuthFunc} from "../../helpers/axiosInstance";
 import Meanings from "../Meanings/Meanings";
 import Alert from "@material-ui/lab/Alert";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import {useSelector} from "react-redux";
+import {getErrorMessage} from "../../helpers/messageHelper";
 
 const Translation = (props) => {
   const history = useHistory();
+  const flashcards = useSelector((state) => state.flashcards.flashcards);
+
   const [results, setResults] = React.useState({
     fromWord: "",
     meanings: null,
@@ -48,11 +52,7 @@ const Translation = (props) => {
           return result;
         })
         .catch(err => {
-          let message = {message: 'Something go wrong. Please try again later.'};
-          if (err.request.response) {
-            message = JSON.parse(err.request.response);
-          }
-
+          const message = getErrorMessage(err);
           setLoading(state => ({
             ...state,
             loading: false,
@@ -75,17 +75,26 @@ const Translation = (props) => {
     fetchTranslations();
   }
 
+  const getFlashcard = (from, to, fromLang, toLang) => {
+    return flashcards.find(flashcard => flashcard.from === from &&
+      flashcard.to[0] === to &&
+      flashcard.fromLang === fromLang &&
+      flashcard.toLang === toLang
+    );
+  };
+
   return <div>
     {
       loading.error ?
         <Alert className="alertInfo" variant="filled" severity="error">
-          {loading.error.message}
+          {loading.error}
         </Alert> :
         loading.loaded && results.meanings ?
           <div>
             {
               results.meanings.map((res, index) => (
                 <Meanings
+                  getFlashcard={getFlashcard}
                   translations={res}
                   fromLang={results.fromLang}
                   toLang={results.toLang}
@@ -98,7 +107,7 @@ const Translation = (props) => {
             <Alert className="alertInfo" variant="filled" severity="info">
               Not found any translations
             </Alert> :
-            <LinearProgress />
+            <LinearProgress/>
     }
   </div>;
 };

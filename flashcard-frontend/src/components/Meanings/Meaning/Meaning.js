@@ -1,21 +1,27 @@
 import React from 'react';
-import MeaningTranslation from "./MeaningTranslation/MeaningTranslation";
 import './Meaning.css';
+import MeaningTranslation from "./MeaningTranslation/MeaningTranslation";
 
 const Meaning = (props) => {
+
   return <div>
     <div className="info" dangerouslySetInnerHTML={{__html: props.meaning.header}}/>
     <div className="translations">
-      {props.meaning.translations.map(it => (
-        <MeaningTranslation
-          meaning={it}
-          from={it.source}
-          to={it.target}
-          fromLang={props.fromLang}
-          toLang={props.toLang}
-          key={it.source + it.target}
-        />
-      ))}
+      {props.meaning.translations.map(it => {
+        const from = it.source;
+        const to = it.target;
+        return (
+          <MeaningTranslation
+            meaning={it}
+            flashcard={props.getFlashcard(from, to, props.fromLang, props.toLang)}
+            from={from}
+            to={to}
+            fromLang={props.fromLang}
+            toLang={props.toLang}
+            key={from + to}
+          />
+        );
+      })}
     </div>
   </div>;
 };

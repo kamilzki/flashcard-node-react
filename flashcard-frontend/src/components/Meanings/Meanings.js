@@ -7,6 +7,7 @@ const Meanings = (props) => {
   return <div className="meanings">
       {props.translations.map((meaning, index) => (
         <Meaning
+          getFlashcard={props.getFlashcard}
           meaning={meaning}
           fromLang={props.fromLang}
           toLang={props.toLang}

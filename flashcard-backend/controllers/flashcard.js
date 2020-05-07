@@ -47,7 +47,7 @@ exports.createFlashcard = async (req, res, next) => {
 
     res.status(201).json({
       message: 'Flashcard created successfully!',
-      post: flashcard,
+      flashcard: flashcard,
       creator: {_id: user._id, name: user.name}
     });
   } catch (err) {

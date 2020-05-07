@@ -14,6 +14,7 @@ const languages = {
   Russian: 'ru',
   Spanish: 'es'
 };
+exports.languages = languages;
 
 const languageCodes = Object.values(languages);
 

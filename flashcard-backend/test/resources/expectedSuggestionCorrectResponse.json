@@ -1,0 +1,62 @@
+[
+  {
+    "label": "Auto",
+    "value": "Auto",
+    "lang": "de"
+  },
+  {
+    "label": "auto",
+    "value": "auto",
+    "lang": "pl"
+  },
+  {
+    "label": "Auto Call Back",
+    "value": "Auto Call Back",
+    "lang": "de"
+  },
+  {
+    "label": "autoagresja",
+    "value": "autoagresja",
+    "lang": "pl"
+  },
+  {
+    "label": "autoalarm",
+    "value": "autoalarm",
+    "lang": "pl"
+  },
+  {
+    "label": "autoanaliza",
+    "value": "autoanaliza",
+    "lang": "pl"
+  },
+  {
+    "label": "Autoantenne",
+    "value": "Autoantenne",
+    "lang": "de"
+  },
+  {
+    "label": "Autoapotheke",
+    "value": "Autoapotheke",
+    "lang": "de"
+  },
+  {
+    "label": "Autoatlas",
+    "value": "Autoatlas",
+    "lang": "de"
+  },
+  {
+    "label": "Autobahn",
+    "value": "Autobahn",
+    "lang": "de"
+  },
+  {
+    "label": "Autobahnabschnitt",
+    "value": "Autobahnabschnitt",
+    "lang": "de"
+  },
+  {
+    "label": "Autobahnauffahrt",
+    "value": "Autobahnauffahrt",
+    "lang": "de"
+  }
+]

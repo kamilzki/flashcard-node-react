@@ -1,0 +1,14 @@
+{
+	"name": "flashcard",
+	"version": "1.0.0",
+	"description": "",
+	"scripts": {
+		"backend": "npm start --prefix flashcard-backend",
+		"frontend": "npm start --prefix flashcard-frontend",
+		"start": "concurrently \"npm run backend\" \"npm run frontend\""
+	},
+	"dependencies": {
+		"concurrently": "^5.2.0"
+	},
+	"devDependencies": {}
+}

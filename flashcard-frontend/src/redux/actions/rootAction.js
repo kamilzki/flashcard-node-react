@@ -27,7 +27,7 @@ export function initFlashcardsError(message) {
 export function fetchFlashcards() {
   return function (dispatch, getState) {
     const { flashcardsLoading } = getState().flashcards;
-    if (flashcardsLoading.loading) {
+    if (flashcardsLoading.loading || flashcardsLoading.loaded) {
       return;
     }
     dispatch(initFlashcardsRequest());

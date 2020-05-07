@@ -42,6 +42,7 @@ exports.createFlashcard = async (req, res, next) => {
     await flashcard.save();
 
     const user = await User.findById(req.userId);
+
     user.flashcards.push(flashcard);
     await user.save();
 
@@ -50,6 +51,7 @@ exports.createFlashcard = async (req, res, next) => {
       flashcard: flashcard,
       creator: {_id: user._id, name: user.name}
     });
+    return flashcard;
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -82,10 +84,8 @@ exports.deleteFlashcard = async (req, res, next) => {
   try {
     const flashcard = await Flashcard.find({_id: id, creator: req.userId});
 
-    if (!flashcard) {
-      const error = new Error('Could not find.');
-      error.statusCode = 404;
-      throw error;
+    if (!flashcard || flashcard.length === 0) {
+      return res.status(404).json({message: 'Could not find.'});
     }
 
     await Flashcard.findByIdAndRemove(id);
@@ -95,10 +95,12 @@ exports.deleteFlashcard = async (req, res, next) => {
     await user.save();
 
     res.status(200).json({message: 'Deleted flashcard.'});
+    return user;
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
+    return err;
   }
 };

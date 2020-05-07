@@ -40,7 +40,11 @@ const MeaningTranslation = (props) => {
         dispatch(removeFlashcard(props.flashcard._id));
       })
       .catch(err => {
-        dispatch(openSnackbar(getErrorMessage(err), "error"));
+        const message = getErrorMessage(err);
+        dispatch(openSnackbar(message, "error"));
+        if (message === "Could not find.") {
+          dispatch(removeFlashcard(props.flashcard._id));
+        }
       })
   };
 

@@ -24,6 +24,9 @@ const Flashcards = (props) => {
       })
       .catch(err => {
         const message = getErrorMessage(err);
+        if (message === "Could not find.") {
+          dispatch(removeFlashcard(flashcardId));
+        }
         dispatch(openSnackbar(message, "error"));
       })
   };

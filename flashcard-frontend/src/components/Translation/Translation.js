@@ -5,10 +5,11 @@ import Meanings from "../Meanings/Meanings";
 import Alert from "@material-ui/lab/Alert";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import {useSelector} from "react-redux";
+import {getErrorMessage} from "../../helpers/messageHelper";
 
 const Translation = (props) => {
   const history = useHistory();
-  const flashcards = useSelector((state) => state.flashcards);
+  const flashcards = useSelector((state) => state.flashcards.flashcards);
 
   const [results, setResults] = React.useState({
     fromWord: "",
@@ -51,11 +52,7 @@ const Translation = (props) => {
           return result;
         })
         .catch(err => {
-          let message = {message: 'Something go wrong. Please try again later.'};
-          if (err.request && err.request.response) {
-            message = JSON.parse(err.request.response);
-          }
-
+          const message = getErrorMessage(err);
           setLoading(state => ({
             ...state,
             loading: false,
@@ -90,7 +87,7 @@ const Translation = (props) => {
     {
       loading.error ?
         <Alert className="alertInfo" variant="filled" severity="error">
-          {loading.error.message}
+          {loading.error}
         </Alert> :
         loading.loaded && results.meanings ?
           <div>

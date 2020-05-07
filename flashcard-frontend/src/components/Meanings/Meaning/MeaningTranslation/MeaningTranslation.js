@@ -3,7 +3,8 @@ import {useDispatch} from "react-redux";
 import './MeaningsTranslation.css'
 
 import {axiosServerAuthFunc} from "../../../../helpers/axiosInstance";
-import {addFlashcard, removeFlashcard} from "../../../../redux/actions/rootAction";
+import {getErrorMessage, SUCCESSFULLY_ADDED, SUCCESSFULLY_DELETED} from "../../../../helpers/messageHelper";
+import {addFlashcard, closeSnackbar, openSnackbar, removeFlashcard} from "../../../../redux/actions/rootAction";
 
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/Add';
@@ -13,6 +14,7 @@ const MeaningTranslation = (props) => {
   const dispatch = useDispatch();
 
   const addFlashcardHandler = (event) => {
+    dispatch(closeSnackbar());
     const body = {
       from: props.from,
       fromLang: props.fromLang,
@@ -22,18 +24,23 @@ const MeaningTranslation = (props) => {
     };
     axiosServerAuthFunc().post('/flashcard', body)
       .then(result => {
+        dispatch(openSnackbar(SUCCESSFULLY_ADDED, "success"));
         dispatch(addFlashcard(result.data.flashcard))
       })
       .catch(err => {
+        dispatch(openSnackbar(getErrorMessage(err), "error"));
       })
   };
 
   const removeFlashcardHandler = (event) => {
+    dispatch(closeSnackbar());
     axiosServerAuthFunc().delete('/flashcard/' + props.flashcard._id)
       .then(_ => {
+        dispatch(openSnackbar(SUCCESSFULLY_DELETED, "success"));
         dispatch(removeFlashcard(props.flashcard._id));
       })
       .catch(err => {
+        dispatch(openSnackbar(getErrorMessage(err), "error"));
       })
   };
 

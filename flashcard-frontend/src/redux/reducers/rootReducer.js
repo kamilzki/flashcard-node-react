@@ -1,23 +1,22 @@
 import {
   ADD_FLASHCARD,
+  CLOSE_SNACKBAR,
   INIT_FLASHCARDS_ERROR,
   INIT_FLASHCARDS_REQUEST,
   INIT_FLASHCARDS_SUCCESS,
+  OPEN_SNACKBAR,
   REMOVE_FLASHCARD
 } from '../actions/rootAction';
+import {combineReducers} from "redux";
 
-const initialState = {
-  room: null,
-  chatLog: [],
-  username: null,
+const initialFlashcardState = {
   flashcards: [],
-  flashcardsError: null,
   flashcardsLoading: {loading: false, loaded: false, error: false}
 };
 
-export default function rootReducer(state, action) {
+function flashcardReducer(state, action) {
   if (typeof state === 'undefined') {
-    return initialState
+    return initialFlashcardState
   }
 
   switch (action.type) {
@@ -39,14 +38,51 @@ export default function rootReducer(state, action) {
       break;
 
     case ADD_FLASHCARD:
-      console.log('ADD_FLASHCARD', action.flashcard);
       state.flashcards = state.flashcards.concat(action.flashcard);
       break;
 
     case REMOVE_FLASHCARD:
-      console.log('REMOVE_FLASHCARD', action.flashcardId);
       state.flashcards = state.flashcards.filter(it => it._id !== action.flashcardId);
       break;
   }
   return state
 }
+
+const initialInfoState = {
+  snackbar: {open: false, type: null, msg: null}
+};
+
+function infoReducer(state = initialInfoState, action) {
+  if (typeof state === 'undefined') {
+    return initialInfoState
+  }
+
+  switch (action.type) {
+    case OPEN_SNACKBAR:
+      return {
+        ...state,
+        snackbar: {
+          open: true,
+          type: action.snackbarType,
+          msg: action.msg
+        }
+      };
+
+    case CLOSE_SNACKBAR:
+      return {
+        ...state,
+        snackbar: {
+          ...state.snackbar,
+          open: false,
+          msg: ""
+        }
+      };
+  }
+
+  return state;
+}
+
+export default combineReducers({
+  flashcards: flashcardReducer,
+  info: infoReducer
+});

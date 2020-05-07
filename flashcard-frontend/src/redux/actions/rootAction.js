@@ -1,4 +1,5 @@
 import {axiosServerAuthFunc} from "../../helpers/axiosInstance";
+import {getErrorMessage} from "../../helpers/messageHelper";
 
 export const INIT_FLASHCARDS_REQUEST = "INIT_FLASHCARDS_REQUEST";
 export function initFlashcardsRequest() {
@@ -25,10 +26,8 @@ export function initFlashcardsError(message) {
 
 export function fetchFlashcards() {
   return function (dispatch, getState) {
-    const { flashcardsLoading } = getState();
-    console.log('fetchFlashcards -> flasLoading:', flashcardsLoading);
+    const { flashcardsLoading } = getState().flashcards;
     if (flashcardsLoading.loading) {
-      console.log('sorry ale ładuje się!');
       return;
     }
     dispatch(initFlashcardsRequest());
@@ -40,11 +39,7 @@ export function fetchFlashcards() {
         }
       })
       .catch(err => {
-        let message = "Something go wrong. Please try again later.";
-        if (err.request && err.request.response) {
-          message = JSON.parse(err.request.response);
-        }
-        dispatch(initFlashcardsError(message));
+        dispatch(initFlashcardsError(getErrorMessage(err)));
       })
   }
 }
@@ -62,5 +57,21 @@ export function removeFlashcard(flashcardId) {
   return {
     type: REMOVE_FLASHCARD,
     flashcardId
+  }
+}
+
+export const OPEN_SNACKBAR = "OPEN_SNACKBAR";
+export function openSnackbar(msg, snackbarType) {
+  return {
+    type: OPEN_SNACKBAR,
+    msg,
+    snackbarType
+  }
+}
+
+export const CLOSE_SNACKBAR = "CLOSE_SNACKBAR";
+export function closeSnackbar() {
+  return {
+    type: CLOSE_SNACKBAR
   }
 }

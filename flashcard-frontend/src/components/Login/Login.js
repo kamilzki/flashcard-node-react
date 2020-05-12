@@ -5,14 +5,17 @@ import './Login.css';
 import {hideLoading, showLoading} from "../../redux/actions/rootAction";
 
 import {axiosServer} from '../../helpers/axiosInstance';
+import {getErrorMessage} from "../../helpers/messageHelper";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import Alert from "@material-ui/lab/Alert";
 
 const Login = (props) => {
   const dispatch = useDispatch();
 
   const email = 'Email';
   const password = 'Password';
+  const [error, setError] = React.useState(null);
   const [inputsState, setInputsState] = React.useState({
     [email]: "",
     [password]: ""
@@ -49,9 +52,11 @@ const Login = (props) => {
         localStorage.setItem('expiryDate', resData.expiryDate);
 
         props.onAuthChange(resData.token, resData.userId, resData.expiryDate);
+        setError(_ => null);
         dispatch(hideLoading());
       })
       .catch(err => {
+        setError(_ => getErrorMessage(err));
         props.onAuthChange(null, null);
         dispatch(hideLoading());
       });
@@ -59,6 +64,15 @@ const Login = (props) => {
 
   return (
     <>
+      {!error ? null :
+        <div className="errors">
+          {
+            <Alert variant="filled" severity="error">
+              {error}
+            </Alert>
+          }
+        </div>
+      }
       <form
         onSubmit={e =>
           loginHandler(e, {

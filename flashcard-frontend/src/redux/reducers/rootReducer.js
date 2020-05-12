@@ -1,11 +1,13 @@
 import {
   ADD_FLASHCARD,
   CLOSE_SNACKBAR,
+  HIDE_LOADING,
   INIT_FLASHCARDS_ERROR,
   INIT_FLASHCARDS_REQUEST,
   INIT_FLASHCARDS_SUCCESS,
   OPEN_SNACKBAR,
-  REMOVE_FLASHCARD
+  REMOVE_FLASHCARD,
+  SHOW_LOADING
 } from '../actions/rootAction';
 import {combineReducers} from "redux";
 
@@ -49,7 +51,8 @@ function flashcardReducer(state, action) {
 }
 
 const initialInfoState = {
-  snackbar: {open: false, type: null, msg: null}
+  snackbar: {open: false, type: null, msg: null},
+  loading: false
 };
 
 function infoReducer(state = initialInfoState, action) {
@@ -76,6 +79,18 @@ function infoReducer(state = initialInfoState, action) {
           open: false,
           msg: ""
         }
+      };
+
+    case SHOW_LOADING:
+      return {
+        ...state,
+        loading: true
+      };
+
+    case HIDE_LOADING:
+      return {
+        ...state,
+        loading: false
       };
   }
 

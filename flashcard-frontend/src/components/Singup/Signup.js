@@ -9,6 +9,7 @@ import {axiosServer} from "../../helpers/axiosInstance";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Alert from '@material-ui/lab/Alert';
+import {getErrorMessage} from "../../helpers/messageHelper";
 
 export default function Signup(props) {
   const history = useHistory();
@@ -56,9 +57,10 @@ export default function Signup(props) {
         dispatch(hideLoading());
       })
       .catch(err => {
+        const message = getErrorMessage(err);
         setInputsState(state => ({
           ...state,
-          errors: err.response.data.data
+          errors: err?.response?.data?.data ?? [{msg: message}]
         }));
         dispatch(hideLoading());
       });

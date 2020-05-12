@@ -1,14 +1,19 @@
 import React from 'react';
 import {useHistory} from "react-router-dom";
+import {useDispatch} from "react-redux";
 import "./Signup.css";
+
+import {hideLoading, showLoading} from "../../redux/actions/rootAction";
+
 import {axiosServer} from "../../helpers/axiosInstance";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Alert from '@material-ui/lab/Alert';
-import Flashcard from "../Flashcards/Flashcard/Flashcard";
 
 export default function Signup(props) {
   const history = useHistory();
+  const dispatch = useDispatch();
+
   const email = 'Email';
   const password = 'Password';
   const name = "Name";
@@ -29,6 +34,7 @@ export default function Signup(props) {
 
   const onSignup = (event, authData) => {
     event.preventDefault();
+    dispatch(showLoading());
     axiosServer.put('/auth/signup', {
       email: inputsState[email],
       password: inputsState[password],
@@ -47,12 +53,14 @@ export default function Signup(props) {
       })
       .then(resData => {
         history.push('/');
+        dispatch(hideLoading());
       })
       .catch(err => {
         setInputsState(state => ({
           ...state,
           errors: err.response.data.data
         }));
+        dispatch(hideLoading());
       });
   };
 

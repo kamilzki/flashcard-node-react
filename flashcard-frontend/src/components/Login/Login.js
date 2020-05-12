@@ -1,10 +1,16 @@
 import React from 'react';
+import {useDispatch} from "react-redux";
 import './Login.css';
+
+import {hideLoading, showLoading} from "../../redux/actions/rootAction";
+
 import {axiosServer} from '../../helpers/axiosInstance';
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
 const Login = (props) => {
+  const dispatch = useDispatch();
+
   const email = 'Email';
   const password = 'Password';
   const [inputsState, setInputsState] = React.useState({
@@ -22,6 +28,7 @@ const Login = (props) => {
 
   const loginHandler = (event, authData) => {
     event.preventDefault();
+    dispatch(showLoading());
     // this.setState({ authLoading: true });
     axiosServer.post('/auth/login', {
       email: authData.email,
@@ -42,9 +49,11 @@ const Login = (props) => {
         localStorage.setItem('expiryDate', resData.expiryDate);
 
         props.onAuthChange(resData.token, resData.userId, resData.expiryDate);
+        dispatch(hideLoading());
       })
       .catch(err => {
         props.onAuthChange(null, null);
+        dispatch(hideLoading());
       });
   };
 
